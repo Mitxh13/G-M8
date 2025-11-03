@@ -1,7 +1,7 @@
 # 🐸G-M8
 
 A next-generation web platform that helps **teachers and students collaborate efficiently** through organized classrooms, student groups, real-time chats, and project submissions — all in one place.  
-> Designed for seamless academic teamwork and project management.
+Designed for seamless academic teamwork and project management.
 
 ---
 
