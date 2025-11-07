@@ -18,6 +18,8 @@
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.2",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "socket": "^1.1.25",
+    "socket.io": "^4.8.1"
   }
 }
