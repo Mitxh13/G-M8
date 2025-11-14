@@ -4,10 +4,10 @@ import {
   getClassById,
   removeStudentFromClass,
   fetchTeacherClasses,
-  fetchStudentClasses, // added
+  fetchStudentClasses,
 } from "../../api";
 import { toast } from "react-toastify";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaFile, FaComments, FaUsers, FaBullhorn } from "react-icons/fa";
 
 const ViewClass = ({ selectedClassId: propClassId }) => {
   const { user, token } = useContext(AuthContext);
@@ -15,7 +15,8 @@ const ViewClass = ({ selectedClassId: propClassId }) => {
   const [loading, setLoading] = useState(false);
   const [selectedClassId, setSelectedClassId] = useState(propClassId || "");
   const [teacherClasses, setTeacherClasses] = useState([]);
-  const [studentClasses, setStudentClasses] = useState([]); // added
+  const [studentClasses, setStudentClasses] = useState([]);
+  const [activeTab, setActiveTab] = useState("Projects");
 
   // Fetch teacher's classes for dropdown
   useEffect(() => {
@@ -111,13 +112,67 @@ const ViewClass = ({ selectedClassId: propClassId }) => {
 
   const { classInfo, members, groups } = classData;
 
+  const tabs = user?.isTeacher
+    ? ["Projects", "Announcements", "Students", "Files", "Chat"]
+    : ["Announcements", "Projects", "Groups", "Chat", "Files"];
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "Projects":
+        return <div>Projects content here</div>;
+      case "Announcements":
+        return <div>Announcements content here</div>;
+      case "Students":
+        return (
+          <div className="info-card">
+            {members.students?.length > 0 ? (
+              members.students.map((student) => (
+                <div key={student._id} className="member-item">
+                  <span>
+                    {student.name} — <span className="dim-text">{student.email}</span>
+                  </span>
+                  {user?.isTeacher && (
+                    <FaTrash
+                      className="delete-icon"
+                      onClick={() => handleRemoveStudent(student._id)}
+                    />
+                  )}
+                </div>
+              ))
+            ) : (
+              <p className="dim-text">No students in this class yet.</p>
+            )}
+          </div>
+        );
+      case "Groups":
+        return (
+          <div className="info-card">
+            {groups?.length > 0 ? (
+              <ul className="list">
+                {groups.map((g) => (
+                  <li key={g._id}>
+                    <strong>{g.name}</strong> — {g.members.length} members
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="dim-text">No groups created yet.</p>
+            )}
+          </div>
+        );
+      case "Files":
+        return <div>Files content here</div>;
+      case "Chat":
+        return <div>Chat content here</div>;
+      default:
+        return <div>Select a tab</div>;
+    }
+  };
+
   return (
     <div className="playground-tab view-class-tab">
-      <h2 className="class-heading-unique">CLASS INFO</h2>
+      <h2 className="class-heading-unique">{classInfo.name}</h2>
       <div className="info-card">
-        <p>
-          <strong>Name:</strong> {classInfo.name}
-        </p>
         <p>
           <strong>Description:</strong>{" "}
           {classInfo.description || "No description provided"}
@@ -127,40 +182,26 @@ const ViewClass = ({ selectedClassId: propClassId }) => {
         </p>
       </div>
 
-      <h2 className="class-heading-unique">MEMBERS</h2>
-      <div className="info-card">
-        {members.students?.length > 0 ? (
-          members.students.map((student) => (
-            <div key={student._id} className="member-item">
-              <span>
-                {student.name} — <span className="dim-text">{student.email}</span>
-              </span>
-              {user?.isTeacher && (
-                <FaTrash
-                  className="delete-icon"
-                  onClick={() => handleRemoveStudent(student._id)}
-                />
-              )}
-            </div>
-          ))
-        ) : (
-          <p className="dim-text">No students in this class yet.</p>
-        )}
+      <div className="tabs-container">
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            className={`tab-btn ${activeTab === tab ? "active" : ""}`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab === "Projects" && <FaFile />}
+            {tab === "Announcements" && <FaBullhorn />}
+            {tab === "Students" && <FaUsers />}
+            {tab === "Groups" && <FaUsers />}
+            {tab === "Files" && <FaFile />}
+            {tab === "Chat" && <FaComments />}
+            <span>{tab}</span>
+          </button>
+        ))}
       </div>
 
-      <h2 className="class-heading-unique">GROUPS</h2>
-      <div className="info-card">
-        {groups?.length > 0 ? (
-          <ul className="list">
-            {groups.map((g) => (
-              <li key={g._id}>
-                <strong>{g.name}</strong> — {g.members.length} members
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="dim-text">No groups created yet.</p>
-        )}
+      <div className="tab-content">
+        {renderTabContent()}
       </div>
     </div>
   );

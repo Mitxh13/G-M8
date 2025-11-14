@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ email: "", password: "", isTeacher: false, srn: "" });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,8 +24,25 @@ const Login = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h1 className="brand-title">Group Mate</h1>
+        <h1 className="brand-title">GroupMate(G-M8)</h1>
         <h2 className="page-title">Log in</h2>
+
+        <div className="role-toggle">
+          <button
+            type="button"
+            className={`role-btn ${form.isTeacher ? 'active' : ''}`}
+            onClick={() => setForm({ ...form, isTeacher: true })}
+          >
+            🧑‍🏫 I’m a Teacher
+          </button>
+          <button
+            type="button"
+            className={`role-btn ${!form.isTeacher ? 'active' : ''}`}
+            onClick={() => setForm({ ...form, isTeacher: false })}
+          >
+            🎓 I’m a Student
+          </button>
+        </div>
 
         <form onSubmit={handleSubmit}>
           <label>Email</label>
@@ -34,7 +51,21 @@ const Login = () => {
             placeholder="your@email.com"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
+            required
           />
+
+          {!form.isTeacher && (
+            <>
+              <label>SRN</label>
+              <input
+                type="text"
+                placeholder="Enter SRN"
+                value={form.srn}
+                onChange={(e) => setForm({ ...form, srn: e.target.value })}
+                required
+              />
+            </>
+          )}
 
           <label>Password</label>
           <input
@@ -42,6 +73,7 @@ const Login = () => {
             placeholder="••••••••"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
+            required
           />
 
           <button type="submit">Log in</button>

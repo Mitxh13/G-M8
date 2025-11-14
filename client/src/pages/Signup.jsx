@@ -16,6 +16,7 @@ const Signup = () => {
     srn: '',
   });
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.password !== form.confirmPassword) {
@@ -44,8 +45,25 @@ const Signup = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h1 className="brand-title">Group Mate</h1>
+        <h1 className="brand-title">GroupMate(G-M8)</h1>
         <h2 className="page-title">Sign Up</h2>
+
+        <div className="role-toggle">
+          <button
+            type="button"
+            className={`role-btn ${form.isTeacher ? 'active' : ''}`}
+            onClick={() => setForm({ ...form, isTeacher: true })}
+          >
+            🧑‍🏫 I’m a Teacher
+          </button>
+          <button
+            type="button"
+            className={`role-btn ${!form.isTeacher ? 'active' : ''}`}
+            onClick={() => setForm({ ...form, isTeacher: false })}
+          >
+            🎓 I’m a Student
+          </button>
+        </div>
 
         <form onSubmit={handleSubmit}>
           <label>Email</label>
@@ -82,16 +100,7 @@ const Signup = () => {
             }
           />
 
-          <div className="checkbox-row">
-            <input
-              type="checkbox"
-              checked={form.isTeacher}
-              onChange={(e) =>
-                setForm({ ...form, isTeacher: e.target.checked })
-              }
-            />
-            <span>Register as a Teacher</span>
-          </div>
+
 
           {!form.isTeacher && (
             <>

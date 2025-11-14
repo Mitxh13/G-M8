@@ -87,7 +87,7 @@ const Home = () => {
 
   const menuItemsTeacher = [
     {
-      name: "Home",
+      name: "Dashboard",
       icon: <FaHome />,
       component: (
         <HomeTab
@@ -97,20 +97,35 @@ const Home = () => {
       ),
     },
     {
-      name: "Create Class",
-      icon: <FaPlusCircle />,
+      name: "Classes",
+      icon: <FaChalkboardTeacher />,
       component: <CreateClass />,
     },
     {
-      name: "View Class",
-      icon: <FaChalkboardTeacher />,
-      component: <ViewClass selectedClassId={selectedClassId} />,
+      name: "Projects",
+      icon: <FaPlusCircle />,
+      component: <div>Projects Placeholder</div>,
+    },
+    {
+      name: "Announcements",
+      icon: <FaEnvelope />,
+      component: <div>Announcements Placeholder</div>,
+    },
+    {
+      name: "Chats",
+      icon: <FaComments />,
+      component: <Chat />,
+    },
+    {
+      name: "Files",
+      icon: <FaIdCard />,
+      component: <div>Files Placeholder</div>,
     },
   ];
 
   const menuItemsStudent = [
     {
-      name: "Home",
+      name: "Dashboard",
       icon: <FaHome />,
       component: (
         <HomeTab
@@ -120,13 +135,30 @@ const Home = () => {
       ),
     },
     { name: "Join Class", icon: <HiUserAdd />, component: <JoinClass /> },
-    // { name: "Create Group", icon: <FaUsers />, component: <CreateGroup /> },
-    // { name: "Join Group", icon: <FaUsers />, component: <JoinGroup /> },
-    // { name: "Chat", icon: <FaComments />, component: <Chat /> },
     {
-      name: "View Class",
+      name: "My Classes",
       icon: <FaChalkboardTeacher />,
       component: <ViewClass selectedClassId={selectedClassId} />,
+    },
+    {
+      name: "Groups",
+      icon: <FaUsers />,
+      component: <CreateGroup />,
+    },
+    {
+      name: "Deadlines",
+      icon: <FaEnvelope />,
+      component: <div>Deadlines Placeholder</div>,
+    },
+    {
+      name: "Chat",
+      icon: <FaComments />,
+      component: <Chat />,
+    },
+    {
+      name: "Files",
+      icon: <FaIdCard />,
+      component: <div>Files Placeholder</div>,
     },
   ];
 
@@ -170,7 +202,7 @@ const Home = () => {
                 className="menu-toggle"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
               />
-              <h1 className="brand">Group Mate</h1>
+              <h1 className="brand">GroupMate(G-M8)</h1>
             </div>
           </div>
 
