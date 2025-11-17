@@ -1,10 +1,12 @@
 import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../context/AuthContext";
 
 const JoinClass = () => {
   const { token } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -32,7 +34,7 @@ const JoinClass = () => {
 
       toast.success(res.data.message || "Joined class successfully!");
       setCode("");
-      window.location.href = "/home";
+      navigate("/home");
     } catch (err) {
       console.error("Join class error:", err);
       toast.error(

@@ -31,7 +31,7 @@ exports.sendMessage = asyncHandler(async (req, res) => {
   });
 
   // optionally populate sender for immediate response
-  await message.populate('sender', 'name email').execPopulate?.();
+  await message.populate('sender', 'name email srn').execPopulate?.();
 
   res.status(201).json(message);
 });
@@ -42,7 +42,7 @@ exports.getMessagesForGroup = asyncHandler(async (req, res) => {
   const messages = await Message.find({ group: groupId })
     .sort({ createdAt: -1 })
     .limit(limit)
-    .populate('sender', 'name email');
+    .populate('sender', 'name email srn');
   res.json(messages.reverse()); // orderinng the messages from old to new 
 });
 
@@ -52,7 +52,7 @@ exports.getMessagesForClass = asyncHandler(async (req, res) => {
   const messages = await Message.find({ classRoom: classId })
     .sort({ createdAt: -1 })
     .limit(limit)
-    .populate('sender', 'name email');
+    .populate('sender', 'name email srn');
   res.json(messages.reverse());
 });
 

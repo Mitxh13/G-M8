@@ -4,18 +4,33 @@ const Class = require('../models/Class');
 const asyncHandler = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 
 exports.createGroup = asyncHandler(async (req, res) => {
-  const { name, classId } = req.body;
-  if (!name || !classId) return res.status(400).json({ message: 'Name and classId required' });
+  const { name, classId, members } = req.body;
+  if (!name) return res.status(400).json({ message: 'Name is required' });
 
-  const cls = await Class.findById(classId);
-  if (!cls) return res.status(404).json({ message: 'Class not found' });
+  let classRef = null;
+  if (classId) {
+    const cls = await Class.findById(classId);
+    if (!cls) return res.status(404).json({ message: 'Class not found' });
+    classRef = classId;
+  }
 
-  // leader defaults to the user who makes the grp
+  // Build members array: always include leader
+  const membersArr = [req.user._id];
+  if (Array.isArray(members)) {
+    // Add unique members excluding leader
+    for (const m of members) {
+      const ms = m.toString();
+      if (ms !== req.user._id.toString() && !membersArr.map(String).includes(ms)) {
+        membersArr.push(ms);
+      }
+    }
+  }
+
   const group = await Group.create({
     name,
-    class: classId,
+    class: classRef,
     leader: req.user._id,
-    members: [req.user._id]
+    members: membersArr,
   });
 
   res.status(201).json(group);
@@ -23,15 +38,25 @@ exports.createGroup = asyncHandler(async (req, res) => {
 
 exports.getGroup = asyncHandler(async (req, res) => {
   const group = await Group.findById(req.params.id)
-    .populate('leader', 'name email')
-    .populate('members', 'name email')
+    .populate('leader', 'name email srn')
+    .populate('members', 'name email srn')
     .populate('class', 'name code');
   if (!group) return res.status(404).json({ message: 'Group not found' });
   res.json(group);
 });
 
 exports.listGroupsForClass = asyncHandler(async (req, res) => {
-  const groups = await Group.find({ class: req.params.classId }).populate('leader', 'name email');
+  const groups = await Group.find({ class: req.params.classId }).populate('leader', 'name email srn');
+  res.json(groups);
+});
+
+exports.listGroupsForUser = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  // groups where user is leader or member
+  const groups = await Group.find({ $or: [{ leader: userId }, { members: userId }] })
+    .populate('leader', 'name email srn')
+    .populate('members', 'name email srn')
+    .populate('class', 'name code');
   res.json(groups);
 });
 

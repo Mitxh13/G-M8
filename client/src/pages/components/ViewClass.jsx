@@ -7,7 +7,7 @@ import {
   fetchStudentClasses,
 } from "../../api";
 import { toast } from "react-toastify";
-import { FaTrash, FaFile, FaComments, FaUsers, FaBullhorn } from "react-icons/fa";
+import { FaTrash, FaFile, FaComments, FaUsers, FaBullhorn, FaArrowLeft } from "react-icons/fa";
 
 const ViewClass = ({ selectedClassId: propClassId }) => {
   const { user, token } = useContext(AuthContext);
@@ -65,43 +65,43 @@ const ViewClass = ({ selectedClassId: propClassId }) => {
     }
   };
 
-  // === Dropdown if no class selected ===
+  // === Class selection if no class selected ===
   if (!selectedClassId) {
+    const classesToDisplay = user?.isTeacher ? teacherClasses : studentClasses;
+    
     return (
       <div className="home-tab">
-        <h2 className="class-heading-unique">SELECT CLASS TO VIEW</h2>
-        {user?.isTeacher ? (
-          <div className="dropdown-container">
-            <select
-              className="class-dropdown"
-              value={selectedClassId}
-              onChange={(e) => setSelectedClassId(e.target.value)}
-            >
-              <option value="">Select a class</option>
-              {teacherClasses.map((cls) => (
-                <option key={cls._id} value={cls._id}>
-                  {cls.name} ({cls.code})
-                </option>
-              ))}
-            </select>
-          </div>
-        ) : user ? (
-          <div className="dropdown-container">
-            <select
-              className="class-dropdown"
-              value={selectedClassId}
-              onChange={(e) => setSelectedClassId(e.target.value)}
-            >
-              <option value="">Select a class</option>
-              {studentClasses.map((cls) => (
-                <option key={cls._id} value={cls._id}>
-                  {cls.name} ({cls.code})
-                </option>
-              ))}
-            </select>
+        <h2 className="class-heading-unique">
+          {user?.isTeacher ? "Select Your Class" : "Select a Class to View"}
+        </h2>
+
+        {classesToDisplay.length === 0 ? (
+          <div className="center-text">
+            <p className="no-classes">
+              {user?.isTeacher
+                ? "You haven't created any classes yet."
+                : "You are not enrolled in any classes yet."}
+            </p>
           </div>
         ) : (
-          <p className="dim-text">Loading user info...</p>
+          <div className="class-grid">
+            {classesToDisplay.map((cls) => (
+              <div
+                key={cls._id}
+                className={`class-card ${user?.isTeacher ? "teacher-card" : "student-card"}`}
+                onClick={() => setSelectedClassId(cls._id)}
+                style={{ cursor: "pointer" }}
+              >
+                <div className="class-header">
+                  <span className="class-name">{cls.name}</span>
+                </div>
+                <p className="class-desc">{cls.description || "No description"}</p>
+                <p className="class-code-text" style={{ marginTop: "10px", fontSize: "0.9em", color: "#666" }}>
+                  Code: {cls.code}
+                </p>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     );
@@ -129,7 +129,7 @@ const ViewClass = ({ selectedClassId: propClassId }) => {
               members.students.map((student) => (
                 <div key={student._id} className="member-item">
                   <span>
-                    {student.name} — <span className="dim-text">{student.email}</span>
+                    {student.name} {student.srn && <span className="dim-text">({student.srn})</span>}
                   </span>
                   {user?.isTeacher && (
                     <FaTrash
@@ -171,7 +171,37 @@ const ViewClass = ({ selectedClassId: propClassId }) => {
 
   return (
     <div className="playground-tab view-class-tab">
-      <h2 className="class-heading-unique">{classInfo.name}</h2>
+      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
+        <button 
+          className="back-btn"
+          onClick={() => setSelectedClassId("")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            padding: "8px 16px",
+            backgroundColor: "#2d2d2d",
+            border: "1px solid #404040",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontSize: "14px",
+            color: "#e0e0e0",
+            fontWeight: "500",
+            transition: "all 0.2s ease"
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = "#3b82f6";
+            e.target.style.color = "#ffffff";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = "#2d2d2d";
+            e.target.style.color = "#e0e0e0";
+          }}
+        >
+          <FaArrowLeft /> Back to Classes
+        </button>
+        <h2 className="class-heading-unique" style={{ margin: 0 }}>{classInfo.name}</h2>
+      </div>
       <div className="info-card">
         <p>
           <strong>Description:</strong>{" "}

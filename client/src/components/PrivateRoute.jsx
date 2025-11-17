@@ -20,9 +20,18 @@ const PrivateRoute = ({ children }) => {
         const data = await fetchMe(token);
         login(token, data); // refresh user info
         setAuthorized(true);
-      } catch {
-        logout();
-        setAuthorized(false);
+      } catch (err) {
+        // Only logout if it's a clear authorization error
+        // Don't logout on temporary network errors
+        if (err.message.includes('401') || err.message.includes('403') || err.message.includes('unauthorized')) {
+          logout();
+          setAuthorized(false);
+        } else {
+          // For other errors, still allow access if we have a token
+          // User can continue working; just user data might be stale
+          console.warn('Could not verify token:', err.message);
+          setAuthorized(true);
+        }
       } finally {
         setChecking(false);
       }

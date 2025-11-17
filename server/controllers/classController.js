@@ -35,13 +35,13 @@ exports.createClass = asyncHandler(async (req, res) => {
 exports.getClass = asyncHandler(async (req, res) => {
   const cls = await Class.findById(req.params.id)
     .populate('teacher', 'name email')
-    .populate('students', 'name email');
+    .populate('students', 'name email srn');
 
   if (!cls) {
     return res.status(404).json({ message: 'Class not found' });
   }
 
-  const groups = await Group.find({ class: cls._id }).populate('members', 'name email');
+  const groups = await Group.find({ class: cls._id }).populate('members', 'name email srn');
 
   res.json({
     classInfo: {

@@ -166,3 +166,22 @@ module.exports = {
   getMe,
   updateUser,
 };
+
+// Lookup users by SRNs (body: { srns: ["SRN1","SRN2"] })
+const lookupUsersBySrns = asyncHandler(async (req, res) => {
+  const { srns } = req.body || {};
+  if (!Array.isArray(srns) || srns.length === 0) {
+    return res.status(400).json({ message: 'srns array required' });
+  }
+  // find users with matching srn
+  const users = await User.find({ srn: { $in: srns } }).select('_id name email srn');
+  res.json({ users });
+});
+
+module.exports = {
+  registerUser,
+  loginUser,
+  getMe,
+  updateUser,
+  lookupUsersBySrns,
+};

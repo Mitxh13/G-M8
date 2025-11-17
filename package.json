@@ -1,0 +1,30 @@
+{
+  "name": "g-m8",
+  "version": "1.0.0",
+  "description": "A next-generation web platform that helps **teachers and students collaborate efficiently** through organized classrooms, student groups, real-time chats, and project submissions — all in one place.  \r Designed for seamless academic teamwork and project management.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mitxh13/G-M8.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mitxh13/G-M8/issues"
+  },
+  "homepage": "https://github.com/Mitxh13/G-M8#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-async-handler": "^1.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.3",
+    "socket.io": "^4.8.1"
+  }
+}

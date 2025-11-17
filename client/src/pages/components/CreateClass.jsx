@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { createClass } from "../../api";
 import { toast } from "react-toastify";
@@ -6,6 +7,7 @@ import {FaPlusCircle} from  "react-icons/fa";
 
 const CreateClass = () => {
   const { token } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -26,7 +28,8 @@ const CreateClass = () => {
       setLoading(true);
       await createClass(token, { name, description, code });
       toast.success("Class created successfully!");
-      window.location.href = "/home";
+      setFormData({ name: "", description: "", code: "" });
+      navigate("/home");
     } catch (err) {
       toast.error(err.message);
     } finally {

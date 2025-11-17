@@ -13,7 +13,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const data = await loginUser(form.email, form.password);
-      login(data.token, data);
+      login(data.token, data, form.isTeacher);
       toast.success("Login successful!");
       navigate("/home");
     } catch (err) {

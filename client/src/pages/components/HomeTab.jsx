@@ -5,15 +5,18 @@ import { fetchTeacherClasses, fetchStudentClasses } from "../../api";
 import { FaRegCopy } from "react-icons/fa";
 
 const HomeTab = ({ setActiveTab, setSelectedClassId }) => {
-  const { user, token } = useContext(AuthContext);
+  const { user, token, rolePreference } = useContext(AuthContext);
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Determine which role to use based on rolePreference
+  const isTeacherMode = rolePreference !== null ? rolePreference : user?.isTeacher;
 
   const loadClasses = async () => {
     if (!user) return;
     setLoading(true);
     try {
-      const data = user.isTeacher
+      const data = isTeacherMode
         ? await fetchTeacherClasses(token)
         : await fetchStudentClasses(token);
 
@@ -55,7 +58,7 @@ const HomeTab = ({ setActiveTab, setSelectedClassId }) => {
 
       <div className="home-content">
         <h2 className="class-heading-unique">
-          {user.isTeacher
+          {isTeacherMode
             ? "Classes You Have Created"
             : "Classes You Are Enrolled In"}
         </h2>
@@ -67,7 +70,7 @@ const HomeTab = ({ setActiveTab, setSelectedClassId }) => {
         ) : classes.length === 0 ? (
           <div className="center-text">
             <p className="no-classes">
-              {user.isTeacher
+              {isTeacherMode
                 ? "You haven't created any classes yet."
                 : "You are not enrolled in any classes yet."}
             </p>
@@ -77,15 +80,19 @@ const HomeTab = ({ setActiveTab, setSelectedClassId }) => {
             {classes.map((cls) => (
               <div
                 key={cls._id}
-                className={`class-card ${user.isTeacher ? "teacher-card" : "student-card"}`}
+                className={`class-card ${isTeacherMode ? "teacher-card" : "student-card"}`}
                 onClick={() => {
                   setSelectedClassId(cls._id);
-                  setActiveTab("View Class");
+                  if (isTeacherMode) {
+                    setActiveTab("View Class");
+                  } else {
+                    setActiveTab("My Classes");
+                  }
                 }}
               >
                 <div className="class-header">
                   <span className="class-name">{cls.name}</span>
-                  {user.isTeacher && (
+                  {isTeacherMode && (
                     <div className="class-code-container">
                       <span className="class-code-text">{cls.code}</span>
                       <FaRegCopy

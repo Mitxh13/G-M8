@@ -130,12 +130,12 @@ a:hover {
 }
 
 .home-container {
-  background: #121212;
-  color: #e0e0e0;
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
+  background: #121212;
+  color: #e0e0e0;
 }
 
 .home-card {
@@ -802,6 +802,61 @@ a:hover {
   color: #3b82f6;
 }
 
+/* === NEW: Dual Column Layout Styles === */
+.home-content.home-dual-layout {
+  display: flex; 
+  gap: 3.5rem; 
+  margin-top: 1.5rem; 
+}
+
+.layout-main {
+  /* Takes up 2/3 of the space */
+  flex: 2; 
+  min-width: 0; 
+}
+
+.layout-sidebar {
+  /* Takes up 1/3 of the space */
+  flex: 1; 
+  min-width: 250px; 
+  border-left: 1px solid #404040; /* Separator */
+  padding-left: 3.5rem; 
+}
+
+.layout-sidebar .class-heading-unique {
+    margin-top: 0; /* Remove excess top margin for sidebar heading */
+}
+
+/* Ensure the class grid adapts to the smaller sidebar width */
+.layout-sidebar .class-grid {
+  grid-template-columns: 1fr; /* Force single column in the sidebar */
+  gap: 1.5rem; /* Tighten up the cards in the sidebar */
+}
+
+/* Responsive adjustment for small screens */
+@media (max-width: 768px) {
+  .home-content.home-dual-layout {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .layout-sidebar {
+    border-left: none;
+    padding-left: 0;
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid #404040; /* Add top border for separation on mobile */
+  }
+
+  /* Reset sidebar class grid to original auto-fit on mobile */
+  .layout-sidebar .class-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 3.5rem;
+  }
+}
+/* === END NEW STYLES === */
+
+
 /* Section heading */
 .class-heading-unique {
   font-size: 1.2rem;
@@ -811,7 +866,7 @@ a:hover {
   color: #9ca3af;
   border-bottom: 1px solid #404040;
   padding-bottom: 0.6rem;
-  margin-top: 5rem;
+  margin-top: 5rem; /* This margin-top is maintained for the main list to clear the greeting */
   margin-bottom: 1.5rem;
 }
 

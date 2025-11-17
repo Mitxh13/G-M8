@@ -1,5 +1,6 @@
-import React, { useContext, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
+import React, { useContext, useState, useEffect } from "react";
+// Assuming AuthContext provides setRolePreference for initialization
+import { AuthContext } from "../context/AuthContext"; 
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -29,21 +30,37 @@ import ViewClass from "./components/ViewClass";
 import JoinClass from "./components/JoinClass";
 import CreateGroup from "./components/CreateGroup";
 import JoinGroup from "./components/JoinGroup";
+import MyGroups from "./components/MyGroups";
+import ErrorBoundary from "../components/ErrorBoundary";
 import Chat from "./components/Chat";
 
 const Home = () => {
-  const { user, logout, token, refreshUser } = useContext(AuthContext);
+  // 🔑 IMPORTANT: Added setRolePreference to context destructuring
+  const { user, logout, token, refreshUser, rolePreference, setRolePreference } = 
+    useContext(AuthContext); 
   const navigate = useNavigate();
+
+  // Determine which menu to show based on rolePreference (for multi-tab support)
+  // If no preference set, use actual user role
+  const isTeacherMode = rolePreference !== null ? rolePreference : user?.isTeacher;
 
   const [showProfile, setShowProfile] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [activeTab, setActiveTab] = useState("Home");
+  const [activeTab, setActiveTab] = useState("Dashboard"); // Changed "Home" to "Dashboard" to match menu name
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedClassId, setSelectedClassId] = useState(null);
 
   const [newName, setNewName] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+
+  // On mount, if rolePreference is not set, initialize it from user.isTeacher
+  useEffect(() => {
+    if (user && rolePreference === null) {
+      // ⚠️ This requires setRolePreference to be correctly passed by AuthContext
+      setRolePreference(user.isTeacher); 
+    }
+  }, [user, rolePreference, setRolePreference]); // Added setRolePreference to dependencies
 
   const handleLogout = () => {
     logout();
@@ -97,9 +114,14 @@ const Home = () => {
       ),
     },
     {
-      name: "Classes",
+      name: "Create a Class",
       icon: <FaChalkboardTeacher />,
       component: <CreateClass />,
+    },
+    {
+      name: "View Class",
+      icon: <FaChalkboardTeacher />,
+      component: <ViewClass selectedClassId={selectedClassId} />,
     },
     {
       name: "Projects",
@@ -134,11 +156,19 @@ const Home = () => {
         />
       ),
     },
-    { name: "Join Class", icon: <HiUserAdd />, component: <JoinClass /> },
     {
       name: "My Classes",
       icon: <FaChalkboardTeacher />,
       component: <ViewClass selectedClassId={selectedClassId} />,
+    },
+    {
+      name: "My Groups",
+      icon: <FaUsers />,
+      component: (
+        <ErrorBoundary>
+          <MyGroups />
+        </ErrorBoundary>
+      ),
     },
     {
       name: "Groups",
@@ -162,10 +192,11 @@ const Home = () => {
     },
   ];
 
-  const menu = user?.isTeacher ? menuItemsTeacher : menuItemsStudent;
+  const menu = isTeacherMode ? menuItemsTeacher : menuItemsStudent;
 
   const activeComponent =
     menu.find((m) => m.name === activeTab)?.component || (
+      // Fallback to Dashboard/HomeTab
       <HomeTab
         setActiveTab={setActiveTab}
         setSelectedClassId={setSelectedClassId}
@@ -182,7 +213,13 @@ const Home = () => {
             <li
               key={item.name}
               className={activeTab === item.name ? "active" : ""}
-              onClick={() => setActiveTab(item.name)}
+              onClick={() => {
+                setActiveTab(item.name);
+                // Reset selectedClassId when clicking "View Class" or "My Classes" to show selection grid
+                if (item.name === "View Class" || item.name === "My Classes") {
+                  setSelectedClassId(null);
+                }
+              }}
               title={!sidebarOpen ? item.name : ""}
             >
               <span className="icon">{item.icon}</span>
@@ -249,16 +286,16 @@ const Home = () => {
                 <FaUser className="profile-icon-modal" />
                 <span>{user?.name}</span>
               </div>
-              <div className="profile-item">
-                <FaEnvelope className="profile-icon-modal" />
-                <span>{user?.email}</span>
-              </div>
               {user?.srn && (
                 <div className="profile-item">
                   <FaIdCard className="profile-icon-modal" />
                   <span>{user?.srn}</span>
                 </div>
               )}
+              <div className="profile-item">
+                <FaEnvelope className="profile-icon-modal" />
+                <span>{user?.email}</span>
+              </div>
             </div>
           </div>
         </>
