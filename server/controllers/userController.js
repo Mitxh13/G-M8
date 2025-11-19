@@ -178,10 +178,16 @@ const lookupUsersBySrns = asyncHandler(async (req, res) => {
   res.json({ users });
 });
 
+const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({}).select('_id name email isTeacher srn');
+  res.json(users);
+});
+
 module.exports = {
   registerUser,
   loginUser,
   getMe,
   updateUser,
   lookupUsersBySrns,
+  getAllUsers,
 };

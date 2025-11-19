@@ -31,8 +31,12 @@ import JoinClass from "./components/JoinClass";
 import CreateGroup from "./components/CreateGroup";
 import JoinGroup from "./components/JoinGroup";
 import MyGroups from "./components/MyGroups";
+import Deadlines from "./components/Deadlines";
+import Files from "./components/Files";
 import ErrorBoundary from "../components/ErrorBoundary";
 import Chat from "./components/Chat";
+import Projects from "./components/Projects";
+
 
 const Home = () => {
   // 🔑 IMPORTANT: Added setRolePreference to context destructuring
@@ -126,12 +130,7 @@ const Home = () => {
     {
       name: "Projects",
       icon: <FaPlusCircle />,
-      component: <div>Projects Placeholder</div>,
-    },
-    {
-      name: "Announcements",
-      icon: <FaEnvelope />,
-      component: <div>Announcements Placeholder</div>,
+      component: <Projects />,
     },
     {
       name: "Chats",
@@ -141,7 +140,7 @@ const Home = () => {
     {
       name: "Files",
       icon: <FaIdCard />,
-      component: <div>Files Placeholder</div>,
+      component: <Files />,
     },
   ];
 
@@ -162,6 +161,11 @@ const Home = () => {
       component: <ViewClass selectedClassId={selectedClassId} />,
     },
     {
+      name: "Join Class",
+      icon: <HiUserAdd />,
+      component: <JoinClass />,
+    },
+    {
       name: "My Groups",
       icon: <FaUsers />,
       component: (
@@ -178,7 +182,7 @@ const Home = () => {
     {
       name: "Deadlines",
       icon: <FaEnvelope />,
-      component: <div>Deadlines Placeholder</div>,
+      component: <Deadlines />,
     },
     {
       name: "Chat",
@@ -188,7 +192,7 @@ const Home = () => {
     {
       name: "Files",
       icon: <FaIdCard />,
-      component: <div>Files Placeholder</div>,
+      component: <Files />,
     },
   ];
 

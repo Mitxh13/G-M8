@@ -40,6 +40,8 @@ exports.getGroup = asyncHandler(async (req, res) => {
   const group = await Group.findById(req.params.id)
     .populate('leader', 'name email srn')
     .populate('members', 'name email srn')
+    .populate('joinRequests', 'name email srn')
+    .populate('invitations.user', 'name email srn')
     .populate('class', 'name code');
   if (!group) return res.status(404).json({ message: 'Group not found' });
   res.json(group);
@@ -52,10 +54,17 @@ exports.listGroupsForClass = asyncHandler(async (req, res) => {
 
 exports.listGroupsForUser = asyncHandler(async (req, res) => {
   const userId = req.user._id;
-  // groups where user is leader or member
-  const groups = await Group.find({ $or: [{ leader: userId }, { members: userId }] })
+  // groups where user is leader or member or has pending invitation
+  const groups = await Group.find({
+    $or: [
+      { leader: userId },
+      { members: userId },
+      { 'invitations.user': userId, 'invitations.status': 'pending' }
+    ]
+  })
     .populate('leader', 'name email srn')
     .populate('members', 'name email srn')
+    .populate('invitations.user', 'name email srn')
     .populate('class', 'name code');
   res.json(groups);
 });
@@ -109,4 +118,61 @@ exports.removeMember = asyncHandler(async (req, res) => {
   group.members = group.members.filter(m => m.toString() !== memberId);
   await group.save();
   res.json({ message: 'Member removed' });
+});
+
+exports.inviteMember = asyncHandler(async (req, res) => {
+  const { id: groupId } = req.params;
+  const { userId } = req.body;
+  const group = await Group.findById(groupId);
+  if (!group) return res.status(404).json({ message: 'Group not found' });
+
+  // leader or teacher only
+  const cls = await Class.findById(group.class);
+  const isLeader = group.leader.toString() === req.user._id.toString();
+  const isTeacher = cls && cls.teacher.toString() === req.user._id.toString();
+  if (!isLeader && !isTeacher) return res.status(403).json({ message: 'Not authorized' });
+
+  if (group.members.includes(userId)) return res.status(400).json({ message: 'User is already a member' });
+  if (group.invitations.some(inv => inv.user.toString() === userId && inv.status === 'pending')) return res.status(400).json({ message: 'Invitation already sent' });
+
+  group.invitations.push({ user: userId, status: 'pending' });
+  await group.save();
+  res.json({ message: 'Invitation sent' });
+});
+
+exports.handleInvitation = asyncHandler(async (req, res) => {
+  const { id: groupId } = req.params;
+  const { action } = req.body; // 'accept' or 'reject'
+  const group = await Group.findById(groupId);
+  if (!group) return res.status(404).json({ message: 'Group not found' });
+
+  const userId = req.user._id;
+  const invitationIndex = group.invitations.findIndex(inv => inv.user.toString() === userId.toString() && inv.status === 'pending');
+  if (invitationIndex === -1) return res.status(400).json({ message: 'No pending invitation' });
+
+  group.invitations[invitationIndex].status = action === 'accept' ? 'accepted' : 'rejected';
+  if (action === 'accept') {
+    if (!group.members.includes(userId)) group.members.push(userId);
+  }
+  await group.save();
+  res.json({ message: `Invitation ${action}ed` });
+});
+
+exports.addMember = asyncHandler(async (req, res) => {
+  const { id: groupId } = req.params;
+  const { userId } = req.body;
+  const group = await Group.findById(groupId);
+  if (!group) return res.status(404).json({ message: 'Group not found' });
+
+  // leader or teacher only
+  const cls = await Class.findById(group.class);
+  const isLeader = group.leader.toString() === req.user._id.toString();
+  const isTeacher = cls && cls.teacher.toString() === req.user._id.toString();
+  if (!isLeader && !isTeacher) return res.status(403).json({ message: 'Not authorized' });
+
+  if (group.members.includes(userId)) return res.status(400).json({ message: 'User is already a member' });
+
+  group.members.push(userId);
+  await group.save();
+  res.json({ message: 'Member added' });
 });

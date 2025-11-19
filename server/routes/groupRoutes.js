@@ -11,6 +11,9 @@ router.get('/:id', protect, groupController.getGroup);
 
 router.post('/:id/request', protect, groupController.requestToJoin);
 router.post('/:id/handle', protect, groupController.handleJoinRequest); // take { userId, action }
+router.post('/:id/invite', protect, groupController.inviteMember); // take { userId }
+router.post('/:id/invitation', protect, groupController.handleInvitation); // take { action }
+router.post('/:id/add-member', protect, groupController.addMember); // take { userId }
 router.delete('/:id/member/:memberId', protect, groupController.removeMember);
 
 module.exports = router;

@@ -1,27 +1,15 @@
-# TODO: Implement Dark Mode Theme for GroupMate(G-M8) App
-
-## Overview
-Transform the entire app to a professional dark mode theme inspired by Microsoft Teams, Google Meet, and Zoom. This includes dark backgrounds, suitable colors for dark mode, and advanced design elements like subtle shadows, rounded corners, and improved contrast.
-
-## Key Changes
-- **Global Theme**: Switch to dark backgrounds (#1e1e1e or #121212), light text (#ffffff or #e0e0e0), and dark cards (#2d2d2d).
-- **Accent Colors**: Retain blues (#1e40af) but ensure high contrast on dark backgrounds.
-- **Professional Design**: Enhance shadows, borders, and spacing for a polished look.
-- **Consistency**: Apply dark mode to all pages (Landing, Auth, Home, etc.).
-
-## Steps to Complete
-- [x] Update global body and layout backgrounds to dark.
-- [x] Modify auth cards, modals, and forms for dark backgrounds and light text.
-- [x] Adjust home layout, sidebar, topbar, and playground to dark theme.
-- [x] Update landing page to dark mode (navbar, hero, features, etc.).
-- [x] Ensure all buttons, inputs, and interactive elements have proper contrast.
-- [x] Test and refine shadows, borders, and hover effects for advanced feel.
-- [x] Verify responsiveness and accessibility in dark mode.
-
-## Dependent Files
-- `client/src/styles/global.css`: Main file for all styles.
-
-## Followup Steps
-- Test the app in browser for visual consistency.
-- Adjust any color values if needed for better readability.
-- Consider adding a theme toggle if required in future.
+- [x] Decrease the size of the remove button in GroupView.jsx by updating the CSS class .delete-icon in global.css
+- [x] Add a new API function addMemberToGroup in api.js
+- [x] Add a new route for adding member in server/routes/groupRoutes.js
+- [x] Add addMember controller function in server/controllers/groupController.js
+- [x] Update GroupView.jsx to include an "Add Member" button for leaders/teachers, with functionality to add members
+- [x] Fix join requests display by populating joinRequests in getGroup and updating frontend to show names and SRNs
+- [x] Add "Join Class" option to student menu in Home.jsx
+- [x] Implement invitation system: Add inviteMemberToGroup and handleInvitation API functions in api.js
+- [x] Add inviteMember and handleInvitation controller functions in server/controllers/groupController.js
+- [x] Update Group model to include invitations array
+- [x] Update GroupView.jsx to use invite instead of direct add, change button text to "Invite"
+- [x] Update MyGroups.jsx to show accept/reject buttons for pending invitations
+- [x] Update listGroupsForUser to include groups with pending invitations
+- [x] Update getGroup to populate invitations.user
+- [ ] Test the changes by running the application

@@ -23,6 +23,14 @@ const classRoutes = require("./routes/classRoutes");
 app.use("/api/classes", require("./routes/classRoutes"));
 app.use("/api/groups", require("./routes/groupRoutes"));
 app.use("/api/chat", require("./routes/chatRoutes"));
+app.use("/api/assignments", require("./routes/assignmentRoutes"));
+app.use("/api/groupchat", require("./routes/groupChatRoutes"));
+app.use("/api/private-chat", require("./routes/privateChatRoutes"));
+app.use("/api/class-chat", require("./routes/classChatRoutes"));
+app.use("/api/projects", require("./routes/projectRoutes"));
+app.use("/api/announcements", require("./routes/announcementRoutes"));
+app.use("/api/deadlines", require("./routes/deadlineRoutes"));
+app.use("/api/class-files", require("./routes/classFileRoutes"));
 app.use("/api/class",classRoutes);
 
 
