@@ -75,7 +75,7 @@ const GroupView = () => {
     if (!newMessage.trim()) return;
     
     try {
-      await sendGroupMessage(token, id, newMessage);
+      await sendGroupMessage(token, id, { content: newMessage });
       setNewMessage('');
       await loadMessages();
     } catch (err) {
@@ -281,7 +281,7 @@ const GroupView = () => {
                       onChange={(e) => setNewMessage(e.target.value)}
                       rows={3}
                       style={{ 
-                        width: '100%', 
+                        width: 'calc(100% - 32px)', 
                         padding: '12px 16px', 
                         border: '1px solid #555555', 
                         borderRadius: '6px', 
@@ -290,7 +290,8 @@ const GroupView = () => {
                         outline: 'none',
                         fontSize: '14px',
                         resize: 'vertical',
-                        fontFamily: 'inherit'
+                        fontFamily: 'inherit',
+                        boxSizing: 'border-box'
                       }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {

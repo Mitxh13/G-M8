@@ -290,6 +290,10 @@ const Home = () => {
                 <FaUser className="profile-icon-modal" />
                 <span>{user?.name}</span>
               </div>
+              <div className="profile-item">
+                <FaIdCard className="profile-icon-modal" />
+                <span>{user?.isTeacher ? 'Teacher' : 'Student'}</span>
+              </div>
               {user?.srn && (
                 <div className="profile-item">
                   <FaIdCard className="profile-icon-modal" />
