@@ -21,7 +21,7 @@ Each classroom works independently with its own students, groups, deadlines, and
 - Create and manage multiple classrooms  
 - Generate unique **join codes** for each class  
 - View all student groups in a classroom  
-- Assign project **deadlines**, **submission links**, and **resources**  
+- Assign project **deadlines** and **resources**  
 
 ### 🎓 For Students
 - Join a class using the provided code  
@@ -40,7 +40,7 @@ Each classroom works independently with its own students, groups, deadlines, and
 
 | Layer | Technologies |
 |-------|---------------|
-| **Frontend** | React.js, Tailwind CSS, ShadCN UI |
+| **Frontend** | React.js, ShadCN UI |
 | **Backend** | Node.js, Express.js |
 | **Database** | MongoDB (Mongoose ORM) |
 | **Authentication** | JWT (JSON Web Token) |
@@ -69,7 +69,7 @@ G-M8
 │       ├── utils/              # Helper functions
 │       ├── App.js
 │       ├── index.js
-│       └── styles/             # CSS / Tailwind configs
+│       └── styles/             # CSS 
 │
 ├── server/                     # ⚙️ Backend (Node.js + Express)
 │   ├── config/
