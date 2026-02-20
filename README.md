@@ -23,6 +23,7 @@ Built using **MERN Stack (MongoDB, Express, React, Node.js)** + **Socket.io** fo
 
 ---
 
+
 ### 👨‍👩‍👧 **Group Management**
 - Create custom groups inside a class  
 - Add or remove group members  
